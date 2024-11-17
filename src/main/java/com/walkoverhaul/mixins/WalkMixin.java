@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class WalkMixin implements IStamina {
     private int currentStamina = CommonConfig.staminaCount;
     private int recoveryCooldown = 0;
+    private boolean didChangeSpeed;
 
     @Override
     public int getCurrentStamina() {
@@ -26,15 +27,33 @@ public class WalkMixin implements IStamina {
             if (isTryingToSprint && currentStamina > 0) {
                 currentStamina--;
                 float sprintMultiplier = CommonConfig.sprintMultiplier;
-                if(player.lastTickPosY != player.posY){
+                if(player.lastTickPosY == player.posY || player.onGround){
+                    player.motionX *= sprintMultiplier / 100.0F;
+                    player.motionZ *= sprintMultiplier / 100.0F;
+                    didChangeSpeed = false;
+                } else {
                     if(CommonConfig.sprintMultiplier > 100) sprintMultiplier = 100;
+                    if(!didChangeSpeed) {
+                        player.motionX *= sprintMultiplier / 100.0F;
+                        player.motionZ *= sprintMultiplier / 100.0F;
+                        didChangeSpeed = true;
+                    }
                 }
-                player.motionX *= sprintMultiplier / 100.0F;
-                player.motionZ *= sprintMultiplier / 100.0F;
             } else {
+                float walkMultiplier = CommonConfig.walkMultiplier;
                 player.setSprinting(false);
-                player.motionX *= CommonConfig.walkMultiplier / 100.0F;
-                player.motionZ *= CommonConfig.walkMultiplier / 100.0F;
+                if(player.lastTickPosY == player.posY || player.onGround){
+                    player.motionX *= walkMultiplier / 100.0F;
+                    player.motionZ *= walkMultiplier / 100.0F;
+                    didChangeSpeed = false;
+                } else {
+                    if(CommonConfig.walkMultiplier > 100) walkMultiplier = 100;
+                    if(!didChangeSpeed) {
+                        player.motionX *= walkMultiplier / 100.0F;
+                        player.motionZ *= walkMultiplier / 100.0F;
+                        didChangeSpeed = true;
+                    }
+                }
                 if (isTryingToSprint && currentStamina == 0) {
                     recoveryCooldown = CommonConfig.recoveryTime;
                 }
