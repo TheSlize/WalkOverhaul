@@ -22,26 +22,21 @@ public class WalkMixin implements IStamina {
     private void onLivingUpdate(CallbackInfo info) {
         EntityPlayerSP player = (EntityPlayerSP) (Object) this;
         boolean isTryingToSprint = player.isSprinting();
-        if (!player.capabilities.isFlying && player.lastTickPosY == player.posY) {
+        if (!player.capabilities.isFlying) {
             if (isTryingToSprint && currentStamina > 0) {
                 currentStamina--;
-                player.motionX *= CommonConfig.sprintMultiplier / 100.0F;
-                player.motionZ *= CommonConfig.sprintMultiplier / 100.0F;
+                float sprintMultiplier = CommonConfig.sprintMultiplier;
+                if(player.lastTickPosY != player.posY){
+                    if(CommonConfig.sprintMultiplier > 100) sprintMultiplier = 100;
+                }
+                player.motionX *= sprintMultiplier / 100.0F;
+                player.motionZ *= sprintMultiplier / 100.0F;
             } else {
                 player.setSprinting(false);
                 player.motionX *= CommonConfig.walkMultiplier / 100.0F;
                 player.motionZ *= CommonConfig.walkMultiplier / 100.0F;
                 if (isTryingToSprint && currentStamina == 0) {
                     recoveryCooldown = CommonConfig.recoveryTime;
-                }
-            }
-        } else if(player.lastTickPosY != player.posY){
-            if(isTryingToSprint){
-                if(currentStamina == 0){
-                    recoveryCooldown = CommonConfig.recoveryTime;
-                    player.setSprinting(false);
-                    player.motionX *= CommonConfig.walkMultiplier / 100.0F;
-                    player.motionZ *= CommonConfig.walkMultiplier / 100.0F;
                 }
             }
         }
