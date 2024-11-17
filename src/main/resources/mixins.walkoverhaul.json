@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.7.11",
+  "compatibilityLevel": "JAVA_8",
+  "package": "com.walkoverhaul.mixins",
+  "refmap": "mixins.walkoverhaul.refmap.json",
+  "mixins": [
+    "WalkMixin"
+  ],
+  "client": [],
+  "server": []
+}

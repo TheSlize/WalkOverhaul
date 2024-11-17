@@ -1,0 +1,18 @@
+[
+  {
+    "modid": "walkoverhaul",
+    "name": "Walk Overhaul",
+    "description": "Makes you walk slower if you just press W. Also adds a configurable sprint speed and stamina!",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": [
+      "Th3_Sl1ze"
+    ],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]
