@@ -8,6 +8,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -46,33 +47,12 @@ public class EntityLivingBaseMixin {
     }
 
     @Inject(method = "setSprinting", at = @At("JUMP"), cancellable = true)
-    public void setSprinting(boolean sprinting, CallbackInfo info){
-        try {
-            if (playerSPexists("net.minecraft.client.entity.EntityPlayerSP")) {
-                if ((Object) this instanceof EntityPlayerSP) {
-                    IStamina staminaHandler = (IStamina) this;
-                    if (sprinting && staminaHandler.getCurrentStamina() == 0) {
-                        info.cancel();
-                    }
-                }
-            } else {
-                if ((Object) this instanceof EntityPlayer) {
-                    IStamina staminaHandler = (IStamina) this;
-                    if (sprinting && staminaHandler.getCurrentStamina() == 0) {
-                        info.cancel();
-                    }
-                }
-
+    public void setSprinting(boolean sprinting, CallbackInfo info) {
+        if ((Object) this instanceof EntityPlayer) {
+            IStamina staminaHandler = (IStamina) this;
+            if (sprinting && staminaHandler.getCurrentStamina() == 0) {
+                info.cancel();
             }
-        } catch (ClassCastException e) {}
-    }
-
-    public boolean playerSPexists(String className) {
-        try {
-            Class.forName(className);
-            return true;
-        } catch (ClassNotFoundException | NoClassDefFoundError e) {
-            return false;
         }
     }
 }
